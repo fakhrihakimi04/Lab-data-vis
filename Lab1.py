@@ -24,6 +24,7 @@ KAGGLE_DATASET = "vivek468/superstore-dataset-final"
 
 COMMON_CSV_NAMES = [
     "Global Superstore.csv",
+    "Sample - Superstore.csv",
     "global_superstore.csv",
     "superstore.csv",
     "Superstore.csv",
@@ -82,23 +83,37 @@ def detect_columns(df):
 
 
 def find_local_csv():
-    """Find a CSV file beside Lab1.py."""
+    """Find a CSV file in the deployed app folder or nearby folders."""
     app_dir = Path(__file__).resolve().parent
+    search_roots = [app_dir, Path.cwd()]
 
-    for file_name in COMMON_CSV_NAMES:
-        candidate = app_dir / file_name
-        if candidate.exists():
-            return candidate
+    for root in search_roots:
+        for file_name in COMMON_CSV_NAMES:
+            candidate = root / file_name
+            if candidate.exists():
+                return candidate
 
-    csv_files = sorted(app_dir.glob("*.csv"))
-    if len(csv_files) == 1:
-        return csv_files[0]
+    csv_files = []
+    for root in search_roots:
+        csv_files.extend(sorted(root.glob("*.csv")))
+        csv_files.extend(sorted(root.glob("**/*.csv")))
+
+    unique_csv_files = []
+    seen_paths = set()
+    for csv_file in csv_files:
+        resolved = csv_file.resolve()
+        if resolved not in seen_paths:
+            unique_csv_files.append(csv_file)
+            seen_paths.add(resolved)
 
     superstore_matches = [
-        path for path in csv_files if "superstore" in path.name.lower()
+        path for path in unique_csv_files if "superstore" in path.name.lower()
     ]
     if superstore_matches:
         return superstore_matches[0]
+
+    if len(unique_csv_files) == 1:
+        return unique_csv_files[0]
 
     return None
 
