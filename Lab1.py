@@ -5,14 +5,6 @@ import altair as alt
 import pandas as pd
 import streamlit as st
 
-
-# ---------------------------------------------------------------------------
-# Lab 1: Global Superstore Interactive Linked Views
-# Built with Streamlit + Altair, as required by the assignment screenshot.
-# Place the Kaggle CSV in the same folder as this file, or install kagglehub
-# so the app can download the dataset automatically.
-# ---------------------------------------------------------------------------
-
 st.set_page_config(
     page_title="Lab 1 - Global Superstore Dashboard",
     layout="wide",
@@ -22,14 +14,8 @@ st.set_page_config(
 
 KAGGLE_DATASET = "vivek468/superstore-dataset-final"
 
-COMMON_CSV_NAMES = [
-    "Global Superstore.csv",
+CSV_NAMES = [
     "Sample - Superstore.csv",
-    "global_superstore.csv",
-    "superstore.csv",
-    "Superstore.csv",
-    "superstore_dataset.csv",
-    "SuperStoreOrders.csv",
 ]
 
 REQUIRED_FIELDS = {
@@ -88,7 +74,7 @@ def find_local_csv():
     search_roots = [app_dir, Path.cwd()]
 
     for root in search_roots:
-        for file_name in COMMON_CSV_NAMES:
+        for file_name in CSV_NAMES:
             candidate = root / file_name
             if candidate.exists():
                 return candidate
